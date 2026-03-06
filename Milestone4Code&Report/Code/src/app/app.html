@@ -1,0 +1,15 @@
+<div class="app-shell">
+  <header class="header">
+    <h1 class="header-title">Community Resource & Event Management System</h1>
+  </header>
+
+  <nav class="nav-tabs">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="tab">Dashboard</a>
+    <a routerLink="/resources" routerLinkActive="active" class="tab">Resources</a>
+    <a routerLink="/events" routerLinkActive="active" class="tab">Events</a>
+  </nav>
+
+  <main class="main">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,150 @@
+<div class="events-page">
+  <h2 class="page-title">Events</h2>
+
+  <!-- Event Form Card -->
+  <div class="event-form-card card">
+    <h3 class="card-heading">{{ editingEventId ? 'Edit Event' : 'Create Event' }}</h3>
+
+    <div class="form-fields">
+      <!-- Event Title -->
+      <div class="field full-width">
+        <label for="title">Event Title</label>
+        <mat-form-field appearance="outline" class="custom-field">
+          <input matInput id="title" [(ngModel)]="title" required placeholder="Enter Event Title" />
+        </mat-form-field>
+      </div>
+
+      <!-- Event Date -->
+      <div class="field full-width">
+        <label for="event_date">Event Date</label>
+        <mat-form-field appearance="outline" class="custom-field">
+          <input matInput [matDatepicker]="picker" [(ngModel)]="event_date" required placeholder="Select Event Date" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Select Resource -->
+      <div class="field full-width">
+        <label for="resource_id">Select Resource</label>
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-select [(ngModel)]="resource_id" id="resource_id" placeholder="Select a Resource">
+            <mat-option [value]="null">None</mat-option>
+            <mat-option *ngFor="let res of resources" [value]="res.resource_id">
+              {{ res.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <div class="field full-width">
+        <label for="description">Description</label>
+        <mat-form-field appearance="outline" class="custom-field">
+          <textarea matInput id="description" rows="4" [(ngModel)]="description" placeholder="Enter event description"></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Image URL -->
+      <div class="field full-width">
+        <label for="image_url">Image URL</label>
+        <mat-form-field appearance="outline" class="custom-field">
+          <input matInput id="image_url" [(ngModel)]="image_url" placeholder="Enter Image URL" />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="btn btn-primary"
+        (click)="createEvent()"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">{{ editingEventId ? 'Update Event' : 'Create Event' }}</span>
+        <span *ngIf="isLoading">Saving...</span>
+      </button>
+
+      <button 
+        mat-stroked-button 
+        color="warn" 
+        (click)="cancel()"
+        class="btn btn-secondary"
+        [disabled]="isLoading"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Upcoming Events Card -->
+  <div class="upcoming-card card">
+    <h3 class="card-heading">Upcoming Events</h3>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loader-container">
+      <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+      <p>Loading events...</p>
+    </div>
+
+    <!-- Events List -->
+    <div *ngIf="!isLoading">
+      <div *ngIf="upcomingEvents.length === 0" class="no-events">
+        No upcoming events found.
+      </div>
+
+      <div class="event-list">
+        <div
+          class="event-item"
+          *ngFor="let event of upcomingEvents; trackBy: trackEvent"
+        >
+          <div class="event-image">
+            <img
+              [src]="event.image_url || 'https://via.placeholder.com/300x200?text=No+Image'"
+              alt="{{ event.title }}"
+              (error)="event.image_url = 'https://via.placeholder.com/300x200?text=No+Image'"
+            />
+          </div>
+
+          <div class="event-info">
+            <h4>{{ event.title }}</h4>
+
+            <p class="event-meta">
+              📅 {{ event.event_date | date:'fullDate' }}
+            </p>
+
+            <p class="event-meta" *ngIf="event.resource_id">
+              🏢 {{ getResourceName(event.resource_id) }}
+            </p>
+
+            <p class="event-description" *ngIf="event.description">
+              {{ event.description }}
+            </p>
+          </div>
+
+          <div class="event-actions">
+            <button
+              mat-raised-button
+              color="accent"
+              (click)="editEvent(event)"
+              [disabled]="isLoading"
+            >
+              Edit
+            </button>
+
+            <button
+              mat-raised-button
+              color="warn"
+              (click)="deleteEvent(event.event_id!)"
+              [disabled]="isLoading"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

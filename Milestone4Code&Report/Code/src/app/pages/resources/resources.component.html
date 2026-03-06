@@ -1,0 +1,143 @@
+<div class="resources-page">
+  <h2 class="page-title">Resources</h2>
+
+  <!-- Resource Form Card -->
+  <div class="resource-form-card card">
+    <h3 class="card-heading">{{ editingResourceId ? 'Edit Resource' : 'Create Resource' }}</h3>
+
+    <div class="form-fields">
+      <!-- Resource Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Resource Name</mat-label>
+        <input matInput [(ngModel)]="name" required />
+      </mat-form-field>
+
+      <!-- Category -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Category</mat-label>
+        <input matInput [(ngModel)]="category" placeholder="Electronics, Space Audio Equipment" required />
+      </mat-form-field>
+
+      <!-- Location -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Location</mat-label>
+        <input matInput [(ngModel)]="location" />
+      </mat-form-field>
+
+      <!-- Last Updated -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Last Updated</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="last_updated" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Availability Toggle -->
+      <div class="full-width availability-row">
+        <label>Availability</label>
+        <div class="availability-controls">
+          <span class="availability-labels">
+            <span class="label-yes" [class.active]="availability_status">Available</span>
+            <span class="label-no" [class.active]="!availability_status">Unavailable</span>
+          </span>
+          <label class="toggle-wrap">
+            <input type="checkbox" [(ngModel)]="availability_status" />
+            <span class="toggle"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Image URL -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Image URL</mat-label>
+        <input matInput [(ngModel)]="image_url" placeholder="Enter Image URL" />
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="btn btn-primary"
+        (click)="createResource()"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">{{ editingResourceId ? 'Update Resource' : 'Create Resource' }}</span>
+        <span *ngIf="isLoading">Saving...</span>
+      </button>
+
+      <button 
+        mat-stroked-button 
+        color="warn" 
+        (click)="cancel()"
+        class="btn btn-secondary"
+        [disabled]="isLoading"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Resources List Card -->
+  <div class="resources-list-card card">
+    <h3 class="card-heading">All Resources</h3>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loader-container">
+      <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+      <p>Loading resources...</p>
+    </div>
+
+    <!-- Resources List (Scrollable) -->
+    <div *ngIf="!isLoading" class="resources-list-container">
+      <div *ngIf="resources.length === 0" class="no-resources">
+        No resources found.
+      </div>
+
+      <div class="resources-list" *ngIf="resources.length > 0">
+        <div
+          class="resource-item"
+          *ngFor="let resource of resources; trackBy: trackResource"
+        >
+          <div class="resource-image">
+            <img
+              [src]="resource.image_url || 'https://via.placeholder.com/300x200?text=No+Image'"
+              alt="{{ resource.name }}"
+              (error)="resource.image_url = 'https://via.placeholder.com/300x200?text=No+Image'"
+            />
+          </div>
+
+          <div class="resource-info">
+            <h4>{{ resource.name }}</h4>
+            <p class="resource-meta">📁 {{ resource.category }}</p>
+            <p class="resource-meta" *ngIf="resource.location">📍 {{ resource.location }}</p>
+            <p class="resource-meta" *ngIf="resource.last_updated">🔄 {{ resource.last_updated | date:'mediumDate' }}</p>
+            <p class="resource-status" [class.available]="resource.availability_status" [class.unavailable]="!resource.availability_status">
+              {{ resource.availability_status ? '✅ Available' : '❌ Unavailable' }}
+            </p>
+          </div>
+
+          <div class="resource-actions">
+            <button
+              mat-raised-button
+              color="accent"
+              (click)="editResource(resource)"
+              [disabled]="isLoading"
+            >
+              Edit
+            </button>
+
+            <button
+              mat-raised-button
+              color="warn"
+              (click)="deleteResource(resource.resource_id!)"
+              [disabled]="isLoading"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
