@@ -25,10 +25,10 @@ This system provides a centralized digital solution that allows users to view re
 The backend system was implemented in **Node.js with Express and MySQL**, while the frontend client developed for this milestone was built using **Angular**.
 The Angular client communicates with the backend REST API to retrieve, create, update, and delete application data.
 
-**ScreenCast URL:** 
+**ScreenCast URL:** https://www.loom.com/share/135a4c4755ab42be8569e2b656c6245e
 
 
-**MileStone 4 Code URL:** 
+**MileStone 4 Code URL:** https://github.com/whaleswqeb/Milestone4Code-Report/tree/main/Milestone4Code%26Report/Code 
 
 ---
 
